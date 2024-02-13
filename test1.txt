@@ -1,0 +1,403 @@
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.36 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| centre_formation   |
+| information_schema |
+| isgi               |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+8 rows in set (0.10 sec)
+
+mysql> create database test1;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| centre_formation   |
+| information_schema |
+| isgi               |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| test1              |
+| world              |
++--------------------+
+9 rows in set (0.00 sec)
+
+mysql> use test1;
+Database changed
+mysql> create table stagiaire(
+    -> code_st int primary key,
+    -> nom_st varchar(20) not null);
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_test1 |
++-----------------+
+| stagiaire       |
++-----------------+
+1 row in set (0.02 sec)
+
+mysql> desc stagiaire;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_st | int         | NO   | PRI | NULL    |       |
+| nom_st  | varchar(20) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> select*from stagiaire;
+Empty set (0.01 sec)
+
+mysql> insert into stagiaire
+    -> values(1,'wissa'),
+    -> (2,'meryam'),
+    -> (3,'farah');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select*from stagiaire
+    -> ;
++---------+--------+
+| code_st | nom_st |
++---------+--------+
+|       1 | wissa  |
+|       2 | meryam |
+|       3 | farah  |
++---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> insert into stagiaire
+    -> values(1,'www');
+ERROR 1062 (23000): Duplicate entry '1' for key 'stagiaire.PRIMARY'
+mysql> show tables;
++-----------------+
+| Tables_in_test1 |
++-----------------+
+| stagiaire       |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> create table stg_copy like tagiaire;
+ERROR 1146 (42S02): Table 'test1.tagiaire' doesn't exist
+mysql> create table stg_copy like stagiaire;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_test1 |
++-----------------+
+| stagiaire       |
+| stg_copy        |
++-----------------+
+2 rows in set (0.00 sec)
+
+mysql> desc stg_copy;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_st | int         | NO   | PRI | NULL    |       |
+| nom_st  | varchar(20) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select*from stg_copy;
+Empty set (0.01 sec)
+
+mysql> insert into stg_copy select*from stagiaire;
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select*from stg_copy;
++---------+--------+
+| code_st | nom_st |
++---------+--------+
+|       1 | wissa  |
+|       2 | meryam |
+|       3 | farah  |
++---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> delete from stagiaire;
+Query OK, 3 rows affected (0.01 sec)
+
+mysql> select*from stagiaire;
+Empty set (0.00 sec)
+
+mysql> insert into stagiaire select*from stg_copy;
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select*from stagiaire;
++---------+--------+
+| code_st | nom_st |
++---------+--------+
+|       1 | wissa  |
+|       2 | meryam |
+|       3 | farah  |
++---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select code_st from stagiaire;
++---------+
+| code_st |
++---------+
+|       1 |
+|       2 |
+|       3 |
++---------+
+3 rows in set (0.00 sec)
+
+mysql> delete from stg_copy where code_st = 2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select *from stagiaire;
++---------+--------+
+| code_st | nom_st |
++---------+--------+
+|       1 | wissa  |
+|       2 | meryam |
+|       3 | farah  |
++---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select *from stg_copy;
++---------+--------+
+| code_st | nom_st |
++---------+--------+
+|       1 | wissa  |
+|       3 | farah  |
++---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> drop table stg_copy;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_test1 |
++-----------------+
+| stagiaire       |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> drop primary key;
+Query OK, 3 rows affected (0.04 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select* from stagiaire;
++---------+--------+
+| code_st | nom_st |
++---------+--------+
+|       1 | wissa  |
+|       2 | meryam |
+|       3 | farah  |
++---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> desc stagiaire;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_st | int         | NO   |     | NULL    |       |
+| nom_st  | varchar(20) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> add primary key (code_st);
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_st | int         | NO   | PRI | NULL    |       |
+| nom_st  | varchar(20) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> create table groupe(
+    -> code_gr int primary key,
+    -> nom_gr varchar(10) not null unique,
+    -> fillier varchar(10)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> desc groupe;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_gr | int         | NO   | PRI | NULL    |       |
+| nom_gr  | varchar(10) | NO   | UNI | NULL    |       |
+| fillier | varchar(10) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> alter table groupe
+    -> add not null (fillier);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'not null (fillier)' at line 2
+mysql> alter table groupe
+    -> modify fillier varchar(10) not null;
+Query OK, 0 rows affected (0.12 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc groupe;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_gr | int         | NO   | PRI | NULL    |       |
+| nom_gr  | varchar(10) | NO   | UNI | NULL    |       |
+| fillier | varchar(10) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> insert into groupe
+    -> values(1,'dev104','info'),
+    -> (2,'ges106','gastion');
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into groupe
+    -> values(3,'dev102','info');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> select*from groupe;
++---------+--------+---------+
+| code_gr | nom_gr | fillier |
++---------+--------+---------+
+|       1 | dev104 | info    |
+|       2 | ges106 | gastion |
+|       3 | dev102 | info    |
++---------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> add code_gr int;
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_st | int         | NO   | PRI | NULL    |       |
+| nom_st  | varchar(20) | NO   |     | NULL    |       |
+| code_gr | int         | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select*from stagiaire;
++---------+--------+---------+
+| code_st | nom_st | code_gr |
++---------+--------+---------+
+|       1 | wissa  |    NULL |
+|       2 | meryam |    NULL |
+|       3 | farah  |    NULL |
++---------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> add foreign key (code_gr)references groupe(code_gr);
+Query OK, 3 rows affected (0.20 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_st | int         | NO   | PRI | NULL    |       |
+| nom_st  | varchar(20) | NO   |     | NULL    |       |
+| code_gr | int         | YES  | MUL | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> update stagiaire
+    -> set code_gr = 3 where code_st = 1;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update stagiaire
+    -> set  code_gr=2 where code_st = 2;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update stagiaire
+    -> set  code_gr=1 where code_st =3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from stagiaire;
++---------+--------+---------+
+| code_st | nom_st | code_gr |
++---------+--------+---------+
+|       1 | wissa  |       3 |
+|       2 | meryam |       2 |
+|       3 | farah  |       1 |
++---------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select *from groupe;e
++---------+--------+---------+
+| code_gr | nom_gr | fillier |
++---------+--------+---------+
+|       1 | dev104 | info    |
+|       2 | ges106 | gastion |
+|       3 | dev102 | info    |
++---------+--------+---------+
+3 rows in set (0.00 sec)
+
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'e' at line 1
+mysql> select*from stagiaire join groupe where stagiaire.code_gr = groupe.code_gr;
++---------+--------+---------+---------+--------+---------+
+| code_st | nom_st | code_gr | code_gr | nom_gr | fillier |
++---------+--------+---------+---------+--------+---------+
+|       3 | farah  |       1 |       1 | dev104 | info    |
+|       2 | meryam |       2 |       2 | ges106 | gastion |
+|       1 | wissa  |       3 |       3 | dev102 | info    |
++---------+--------+---------+---------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select code_st ,nom_st ,nom_gr,fillier from stagiaire join groupe where stagiaire.code_gr = groupe.code_gr;
++---------+--------+--------+---------+
+| code_st | nom_st | nom_gr | fillier |
++---------+--------+--------+---------+
+|       3 | farah  | dev104 | info    |
+|       2 | meryam | ges106 | gastion |
+|       1 | wissa  | dev102 | info    |
++---------+--------+--------+---------+
+3 rows in set (0.00 sec)
+mysql> desc groupe;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| code_gr | int         | NO   | PRI | NULL    |       |
+| nom_gr  | varchar(10) | NO   | UNI | NULL    |       |
+| fillier | varchar(10) | NO   |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
